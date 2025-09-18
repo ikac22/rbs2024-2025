@@ -5,17 +5,25 @@
       <option name="myRunnerSettings" />
       <option name="myRunnerParameters">
         <MavenRunnerParameters>
+          <option name="cmdOptions" />
           <option name="profiles">
             <set />
           </option>
           <option name="goals">
             <list>
               <option value="sonar:sonar" />
+              <option value="-Dsonar.host.url=http://localhost:9000" />
+              <option value="-Dsonar.projectKey=rbs2024-2025" />
+              <option value="-Dsonar.login=sqa_2b5c47589f5a1581d68d670d46ebda74fea1c6f8" />
             </list>
           </option>
+          <option name="multimoduleDir" />
           <option name="pomFileName" />
           <option name="profilesMap">
             <map />
+          </option>
+          <option name="projectsCmdOptionValues">
+            <list />
           </option>
           <option name="resolveToWorkspace" value="false" />
           <option name="workingDirPath" value="$PROJECT_DIR$" />

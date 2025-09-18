@@ -34,5 +34,7 @@ build/
 ### VS Code ###
 .vscode/
 
+**/sonarqube_*/*
+
 ### Node ###
 node_modules
