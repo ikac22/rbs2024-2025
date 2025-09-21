@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,11 +59,14 @@ public class BooksController {
     }
 
     @GetMapping("/books")
-    public String showBook(@RequestParam(name = "id", required = false) String id, Model model, Authentication authentication) {
+    public String showBook(@RequestParam(name = "id", required = false) String id, Model model, Authentication authentication, HttpSession session) {
         if (id == null) {
             model.addAttribute("books", bookRepository.getAll());
             return "books";
         }
+
+        String csrf = session.getAttribute("CSRF_TOKEN").toString();
+        model.addAttribute("CSRF_TOKEN", session.getAttribute("CSRF_TOKEN"));
 
         User user = (User) authentication.getPrincipal();
         List<Tag> tagList = this.tagRepository.getAll();
