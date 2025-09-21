@@ -34,7 +34,14 @@ build/
 ### VS Code ###
 .vscode/
 
+### SonarQube data ###
 **/sonarqube_*/*
+
+### Chromium user data ###
+.chromium/*
+
+### Release
+release/*
 
 ### Node ###
 node_modules
