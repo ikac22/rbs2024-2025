@@ -10,6 +10,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpSession;
+import java.nio.file.AccessDeniedException;
 
 @Controller
 public class CommentController {
@@ -22,7 +26,14 @@ public class CommentController {
     }
 
     @PostMapping(value = "/comments", consumes = "application/json")
-    public ResponseEntity<Void> createComment(@RequestBody Comment comment, Authentication authentication) {
+    public ResponseEntity<Void> createComment(@RequestBody Comment comment, Authentication authentication,
+                                              HttpSession session, @RequestParam("csrfToken") String csrfToken)
+            throws AccessDeniedException
+    {
+        String csrf = session.getAttribute("CSRF_TOKEN").toString();
+        if (!csrf.equals(csrfToken)) {
+            throw new AccessDeniedException("Forbidden");
+        }
         User user = (User) authentication.getPrincipal();
         comment.setUserId(user.getId());
         commentRepository.create(comment);
