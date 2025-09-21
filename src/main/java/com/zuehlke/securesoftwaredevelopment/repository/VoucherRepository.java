@@ -61,9 +61,10 @@ public class VoucherRepository {
              ResultSet rs = statement.executeQuery(query1)) {
             if (rs.next()) {
                 String username = rs.getString(1);
-                String query2 = "SELECT id FROM voucher WHERE code=? AND code LIKE '%" + username + "%'";
+                String query2 = "SELECT id FROM voucher WHERE code=? AND code LIKE ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(query2);
                 preparedStatement.setString(1, voucher);
+                preparedStatement.setString(2, "%" + username + "%");
                 ResultSet set = preparedStatement.executeQuery();
                 if (set.next()) {
                     return true;

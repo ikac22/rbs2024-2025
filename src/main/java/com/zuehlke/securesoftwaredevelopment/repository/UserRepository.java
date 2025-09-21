@@ -20,16 +20,18 @@ public class UserRepository {
     }
 
     public User findUser(String username) {
-        String query = "SELECT id, username, password FROM users WHERE username='" + username + "'";
+        String query = "SELECT id, username, password FROM users WHERE username= ?";
         try (Connection connection = dataSource.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet rs = statement.executeQuery(query)) {
-            if (rs.next()) {
-                int id = rs.getInt(1);
-                String username1 = rs.getString(2);
-                String password = rs.getString(3);
-                return new User(id, username1, password);
-            }
+            PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, username);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    int id = rs.getInt(1);
+                    String username1 = rs.getString(2);
+                    String password = rs.getString(3);
+                    return new User(id, username1, password);
+                    }
+                }
         } catch (SQLException e) {
             e.printStackTrace();
         }
