@@ -63,8 +63,59 @@ values (1, 1, 'Good read.');
 
 insert into roles(id, name)
 values (1, 'ADMIN'),
-       (2, 'MANAGER');
+       (2, 'MANAGER'),
+       (3, 'BUYER');
+
+insert into permissions(id, name)
+values (1, 'ADD_COMMENT'),
+       (2, 'VIEW_BOOK_LIST'),
+       (3, 'CREATE_BOOK'),
+       (4, 'VIEW_PERSONS_LIST'),
+       (5, 'VIEW_PERSON'),
+       (6, 'UPDATE_PERSON'),
+       (7, 'VIEW_MY_PROFILE'),
+       (8, 'RATE_BOOK'),
+       (9, 'BUY_BOOK'),
+       (10, 'NEW_VOUCHER');
+
+-- ADMIN
+-- ADMIN ima sve permisije
+insert into role_to_permissions(roleId, permissionId)
+values (1, 1),  -- ADD_COMMENT
+       (1, 2),  -- VIEW_BOOK_LIST
+       (1, 3),  -- CREATE_BOOK
+       (1, 4),  -- VIEW_PERSONS_LIST
+       (1, 5),  -- VIEW_PERSON
+       (1, 6),  -- UPDATE_PERSON
+       (1, 7),  -- VIEW_MY_PROFILE
+       (1, 8),  -- RATE_BOOK
+       (1, 9),  -- BUY_BOOK
+       (1, 10); -- NEW_VOUCHER
+
+
+-- MANAGER
+insert into role_to_permissions(roleId, permissionId)
+values (2, 1),  -- ADD_COMMENT
+       (2, 2),  -- VIEW_BOOK_LIST
+       (2, 3),  -- CREATE_BOOK
+       (2, 4),  -- VIEW_PERSONS_LIST
+       (2, 6),  -- UPDATE_PERSON (samo sopstveni nalog)
+       (2, 7),  -- VIEW_MY_PROFILE
+       (2, 9),  -- BUY_BOOK
+       (2, 10);  -- NEW_VOUCHER
+
+-- BUYER
+insert into role_to_permissions(roleId, permissionId)
+values (3, 1),  -- ADD_COMMENT
+       (3, 2),  -- VIEW_BOOK_LIST
+       (3, 6),  -- UPDATE_PERSON (samo sopstveni nalog)
+       (3, 7),  -- VIEW_MY_PROFILE
+       (3, 8),  -- RATE_BOOK
+       (3, 9);  -- BUY_BOOK
+
 
 insert into user_to_roles(userId, roleId)
-values (4, 1),
-       (3, 2);
+values (4, 1), -- book  - ADMIN
+       (3, 2), -- tom   - MANAGER
+       (1, 3), -- bruce - BUYER
+       (2, 3); -- peter - BUYER
