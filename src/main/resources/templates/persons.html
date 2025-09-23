@@ -36,7 +36,9 @@
             <td th:text="${person.firstName}"></td>
             <td th:text="${person.lastName}"></td>
             <td th:text="${person.email}"></td>
-            <td><a th:href="@{/persons/{id}(id=${person.id})}">View profile</a></td>
+
+            <td th:if="${!person.id.equals(currPerson.id)}"><a th:href="@{/persons/{id}(id=${person.id})}" sec:authorize="hasAuthority('VIEW_PERSON')" >View profile</a></td>
+            <td th:if="${person.id.equals(currPerson.id)}"><a href="/myprofile" sec:authorize="hasAuthority('VIEW_MY_PROFILE')" >View profile</a></td>
         </tr>
         </tbody>
     </table>
