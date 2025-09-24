@@ -33,7 +33,7 @@ public class UserRepository {
                     }
                 }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Failed to find user " + username, e);
         }
         return null;
     }
@@ -48,7 +48,7 @@ public class UserRepository {
                 return username;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Failed to find username of an user " + id, e);
         }
         return null;
     }
@@ -62,7 +62,7 @@ public class UserRepository {
             statement.setString(1, username);
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Failed to update username of an user " + id, e);
         }
     }
 
@@ -73,7 +73,7 @@ public class UserRepository {
              ResultSet rs = statement.executeQuery(query)) {
             return rs.next();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("Failed to validCredentials of an user " + username, e);
         }
         return false;
     }
@@ -85,7 +85,7 @@ public class UserRepository {
         ) {
             statement.executeUpdate(query);
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Failed to delete user " + userId, e);
         }
     }
 }

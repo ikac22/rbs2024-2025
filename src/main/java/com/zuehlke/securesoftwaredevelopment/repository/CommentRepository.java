@@ -31,7 +31,7 @@ public class CommentRepository {
             statement.setString(3, comment.getComment());
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("Failed to insert comment: " + "(" + comment.getBookId() + ", " + comment.getUserId() + ", " + comment.getComment() + ")", e);
         }
     }
 
