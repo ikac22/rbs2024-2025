@@ -72,7 +72,7 @@ public class VoucherRepository {
                 return false;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("Failed to check if voucher is assigned to user " + voucher, e);
         }
         return false;
     }
@@ -86,6 +86,7 @@ public class VoucherRepository {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            LOG.error("Failed to delete voucher " + voucher, e);
         }
     }
 
@@ -99,7 +100,7 @@ public class VoucherRepository {
                 vouchers.add(new Voucher(rs.getInt(1), rs.getString(2), rs.getInt(3)));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("Failed to get all vouchers", e);
         }
         return vouchers;
     }

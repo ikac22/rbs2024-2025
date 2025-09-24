@@ -36,7 +36,7 @@ public class PermissionRepository {
                 permissions.add(new Permission(id, name));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("Failed to find permissions by role id " + roleId, e);
         }
         return permissions;
     }

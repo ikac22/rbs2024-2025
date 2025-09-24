@@ -60,7 +60,7 @@ public class RatingRepository {
                 ratingList.add(new Rating(rs.getInt(1), rs.getInt(2), rs.getInt(3)));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Failed to get ratings for book with id " + bookId, e);
         }
         return ratingList;
     }

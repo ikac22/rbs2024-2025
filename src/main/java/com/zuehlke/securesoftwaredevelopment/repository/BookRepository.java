@@ -55,6 +55,8 @@ public class BookRepository {
             while (rs.next()) {
                 bookList.add(createBookFromResultSet(rs));
             }
+        } catch (SQLException e) {
+            LOG.warn("Failed to search for books by search term " + searchTerm, e);
         }
         return bookList;
     }
@@ -83,7 +85,7 @@ public class BookRepository {
                 return book;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Failed to get book with id " + bookId, e);
         }
 
         return null;
@@ -112,12 +114,12 @@ public class BookRepository {
                         statement2.setInt(2, tag.getId());
                         statement2.executeUpdate();
                     } catch (SQLException e) {
-                        e.printStackTrace();
+                        LOG.error("Failed to insert new book_to_tag with id " + finalId, e);
                     }
                 });
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Failed to insert new book with id " + id, e);
         }
         return id;
     }
@@ -135,7 +137,7 @@ public class BookRepository {
             statement.executeUpdate(query3);
             statement.executeUpdate(query4);
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("Failed to delete book with id " + bookId, e);
         }
     }
 
