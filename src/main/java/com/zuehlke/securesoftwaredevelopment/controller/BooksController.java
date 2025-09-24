@@ -1,6 +1,7 @@
 package com.zuehlke.securesoftwaredevelopment.controller;
 
 import com.zuehlke.securesoftwaredevelopment.config.AuditLogger;
+import com.zuehlke.securesoftwaredevelopment.config.DatabaseAuthenticationProvider;
 import com.zuehlke.securesoftwaredevelopment.domain.*;
 import com.zuehlke.securesoftwaredevelopment.repository.*;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -105,8 +107,38 @@ public class BooksController {
     @PreAuthorize("hasAuthority('CREATE_BOOK')")
     public String createBook(NewBook newBook) throws SQLException {
         List<Tag> tagList = this.tagRepository.getAll();
-        List<Tag> tagsToInsert = newBook.getTags().stream().map(tagId -> tagList.stream().filter(tag -> tag.getId() == tagId).findFirst().get()).collect(Collectors.toList());
+        List<Tag> tagsToInsert = null;
+
+        StringBuilder tagsStringBuilder = new StringBuilder();
+        String bookString = "";
+
+        boolean success = false;
+        try {
+            tagsToInsert = newBook.getTags().stream().map(tagId -> tagList.stream().filter(tag -> tag.getId() == tagId).findFirst().get()).collect(Collectors.toList());
+            for (Tag tag : tagsToInsert) {
+                tagsStringBuilder.append(tag.getId());
+                tagsStringBuilder.append(", ");
+            }
+        }catch(NoSuchElementException e){
+            // LOG warn
+        }
+
         Long id = bookRepository.create(newBook, tagsToInsert);
+        if(id >= 0) { success = true; }
+
+        bookString = "(" +
+                "name = " + newBook.getName() + ", " +
+                "author = " +  newBook.getAuthor() + ", " +
+                "description = " +  newBook.getDescription() + ", " +
+                "price = " + newBook.getPrice() + ", " +
+                "tags = " +  tagsStringBuilder + ")";
+
+        if(!success) {
+            AuditLogger.getAuditLogger(BooksController.class).audit("Failed to create a new book: " + bookString);
+        } else{
+            AuditLogger.getAuditLogger(BooksController.class).audit("Successfully created a new book: " + bookString);
+        }
+
         return "redirect:/books?id=" + id;
     }
 
@@ -136,6 +168,7 @@ public class BooksController {
     public String buyBook(@PathVariable("id") int id, String address, String voucher) {
         String voucherUsed = "";
         boolean exist = voucherRepository.checkIfVoucherExist(voucher);
+        boolean success = false;
 
         if (address.length() < 10) {
             return String.format("redirect:/buy-book/%s?addressError=true", id);
@@ -149,8 +182,14 @@ public class BooksController {
                 if (voucherRepository.checkIfVoucherIsAssignedToUser(voucher, user.getId())) {
                     voucherRepository.deleteVoucher(voucher);
                     voucherUsed = "&voucherUsed=true";
+                    AuditLogger.getAuditLogger(BooksController.class).audit("Successfully redeemed voucher: " + voucher);
+                    success = true;
                 }
             }
+        }
+
+        if (!success) {
+            AuditLogger.getAuditLogger(BooksController.class).audit("Failed to redeem a voucher: " + voucher);
         }
 
         return String.format("redirect:/buy-book/%s?bought=true%s", id, voucherUsed);

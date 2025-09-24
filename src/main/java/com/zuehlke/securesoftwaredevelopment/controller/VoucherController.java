@@ -47,6 +47,7 @@ public class VoucherController {
         if (authentication != null && authentication.isAuthenticated()) {
             User user = (User) authentication.getPrincipal();
             voucherRepository.create(user.getId(), code, value);
+            AuditLogger.getAuditLogger(VoucherController.class).audit("Successfully created voucher with code " + code);
         }
         return "redirect:/new-voucher";
     }

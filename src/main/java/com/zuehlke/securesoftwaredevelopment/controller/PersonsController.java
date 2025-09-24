@@ -73,8 +73,10 @@ public class PersonsController {
             personRepository.delete(id);
             userRepository.delete(id);
         } else{
+            AuditLogger.getAuditLogger(PersonsController.class).audit("Failed to delete user with id " + id);
             throw new AccessDeniedException("Access denied.");
         }
+        AuditLogger.getAuditLogger(PersonsController.class).audit("Successfully deleted user with id " + id);
 
         return ResponseEntity.noContent().build();
     }
@@ -84,14 +86,24 @@ public class PersonsController {
     public String updatePerson(Person person, String username, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         Person tmpPerson = personRepository.get("" + user.getId());
+        String userStr = "( " +
+                "id=" + person.getId() + ", " +
+                "username=" + username + ", " +
+                "FirstName=" + person.getFirstName() + ", " +
+                "LastName=" + person.getLastName() + ", " +
+                "E-mail=" + person.getEmail() +  ")";
+
         boolean isAdmin = isAdmin(user);
         if (isAdmin|| tmpPerson.getId().equals(person.getId())) {
             personRepository.update(person);
             userRepository.updateUsername(Integer.parseInt(person.getId()), username);
         }
         else{
+            AuditLogger.getAuditLogger(PersonsController.class).audit("Failed to delete user with id " + person.getId() + " to " + userStr);
             throw new AccessDeniedException("Access denied.");
         }
+
+        AuditLogger.getAuditLogger(PersonsController.class).audit("Sucessully updated user with id " + person.getId() + " to " + userStr);
         if (isAdmin)
             return "redirect:/persons/" + person.getId();
         else
