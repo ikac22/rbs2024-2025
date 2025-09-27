@@ -43,5 +43,8 @@ build/
 ### Thief ###
 amela-rbs/*
 
+### Release ###
+release/*
+
 ### Node ###
 node_modules
