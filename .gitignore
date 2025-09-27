@@ -43,5 +43,8 @@ build/
 ### Release
 release/*
 
+### Release ###
+release/*
+
 ### Node ###
 node_modules
