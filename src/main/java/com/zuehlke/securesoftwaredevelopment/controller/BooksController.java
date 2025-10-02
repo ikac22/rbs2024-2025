@@ -73,7 +73,7 @@ public class BooksController {
         }
 
         String csrf = session.getAttribute("CSRF_TOKEN").toString();
-        model.addAttribute("CSRF_TOKEN", session.getAttribute("CSRF_TOKEN"));
+        model.addAttribute("csrfToken", session.getAttribute("CSRF_TOKEN"));
 
         User user = (User) authentication.getPrincipal();
         List<Tag> tagList = this.tagRepository.getAll();

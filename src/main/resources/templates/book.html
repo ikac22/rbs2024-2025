@@ -103,8 +103,9 @@
 
             document.getElementById("createComment").addEventListener("click", function () {
                 const comment = document.getElementById("addComment").value;
+                const csrfToken = document.getElementById("csrf-token").value;
 
-                fetch('/comments', {
+                fetch(`/comments?csrfToken=${csrfToken}`, {
                     method: 'POST',
                     body: JSON.stringify({
                         bookId: bookID,
